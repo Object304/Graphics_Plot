@@ -51,6 +51,18 @@ namespace Graphic {
 	private: System::Windows::Forms::TextBox^ tbYMin;
 	private: System::Windows::Forms::TextBox^ tbYMax;
 	private: System::Windows::Forms::TextBox^ tbXMin;
+	private: System::Windows::Forms::Button^ btn_moveDown;
+	private: System::Windows::Forms::Button^ btn_moveUp;
+	private: System::Windows::Forms::Button^ btn_scaleUp;
+	private: System::Windows::Forms::Button^ btn_scaleDown;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Button^ btn_moveLeft;
+	private: System::Windows::Forms::Button^ btn_moveRight;
+	private: System::Windows::Forms::Button^ btn_scaleOut;
+	private: System::Windows::Forms::Button^ btn_scaleIn;
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Label^ label4;
 
 
 	private:
@@ -72,6 +84,18 @@ namespace Graphic {
 			this->tbYMin = (gcnew System::Windows::Forms::TextBox());
 			this->tbYMax = (gcnew System::Windows::Forms::TextBox());
 			this->tbXMin = (gcnew System::Windows::Forms::TextBox());
+			this->btn_moveDown = (gcnew System::Windows::Forms::Button());
+			this->btn_moveUp = (gcnew System::Windows::Forms::Button());
+			this->btn_scaleUp = (gcnew System::Windows::Forms::Button());
+			this->btn_scaleDown = (gcnew System::Windows::Forms::Button());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->btn_moveLeft = (gcnew System::Windows::Forms::Button());
+			this->btn_moveRight = (gcnew System::Windows::Forms::Button());
+			this->btn_scaleOut = (gcnew System::Windows::Forms::Button());
+			this->btn_scaleIn = (gcnew System::Windows::Forms::Button());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pbPlot))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -86,9 +110,9 @@ namespace Graphic {
 			// 
 			// btnPlot
 			// 
-			this->btnPlot->Location = System::Drawing::Point(364, 454);
+			this->btnPlot->Location = System::Drawing::Point(1052, 529);
 			this->btnPlot->Name = L"btnPlot";
-			this->btnPlot->Size = System::Drawing::Size(161, 69);
+			this->btnPlot->Size = System::Drawing::Size(161, 94);
 			this->btnPlot->TabIndex = 1;
 			this->btnPlot->Text = L"Построить";
 			this->btnPlot->UseVisualStyleBackColor = true;
@@ -126,11 +150,131 @@ namespace Graphic {
 			this->tbXMin->TabIndex = 5;
 			this->tbXMin->Text = L"-10";
 			// 
+			// btn_moveDown
+			// 
+			this->btn_moveDown->Location = System::Drawing::Point(922, 347);
+			this->btn_moveDown->Name = L"btn_moveDown";
+			this->btn_moveDown->Size = System::Drawing::Size(75, 69);
+			this->btn_moveDown->TabIndex = 6;
+			this->btn_moveDown->Text = L"|\r\n|\r\n\\/";
+			this->btn_moveDown->UseVisualStyleBackColor = true;
+			// 
+			// btn_moveUp
+			// 
+			this->btn_moveUp->Location = System::Drawing::Point(922, 44);
+			this->btn_moveUp->Name = L"btn_moveUp";
+			this->btn_moveUp->Size = System::Drawing::Size(75, 69);
+			this->btn_moveUp->TabIndex = 7;
+			this->btn_moveUp->Text = L"/\\\r\n|\r\n|";
+			this->btn_moveUp->UseVisualStyleBackColor = true;
+			// 
+			// btn_scaleUp
+			// 
+			this->btn_scaleUp->Location = System::Drawing::Point(1051, 44);
+			this->btn_scaleUp->Name = L"btn_scaleUp";
+			this->btn_scaleUp->Size = System::Drawing::Size(75, 69);
+			this->btn_scaleUp->TabIndex = 8;
+			this->btn_scaleUp->Text = L"/\\\r\n|\r\n\\/";
+			this->btn_scaleUp->UseVisualStyleBackColor = true;
+			// 
+			// btn_scaleDown
+			// 
+			this->btn_scaleDown->Location = System::Drawing::Point(1051, 347);
+			this->btn_scaleDown->Name = L"btn_scaleDown";
+			this->btn_scaleDown->Size = System::Drawing::Size(75, 69);
+			this->btn_scaleDown->TabIndex = 9;
+			this->btn_scaleDown->Text = L"\\/\r\n|\r\n/\\";
+			this->btn_scaleDown->UseVisualStyleBackColor = true;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(918, 215);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(86, 40);
+			this->label1->TabIndex = 10;
+			this->label1->Text = L"Переме-\r\nщать по Y";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(1047, 215);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(100, 40);
+			this->label2->TabIndex = 11;
+			this->label2->Text = L"Масштаби-\r\nровать по Y";
+			// 
+			// btn_moveLeft
+			// 
+			this->btn_moveLeft->Location = System::Drawing::Point(118, 454);
+			this->btn_moveLeft->Name = L"btn_moveLeft";
+			this->btn_moveLeft->Size = System::Drawing::Size(75, 69);
+			this->btn_moveLeft->TabIndex = 12;
+			this->btn_moveLeft->Text = L"<====";
+			this->btn_moveLeft->UseVisualStyleBackColor = true;
+			// 
+			// btn_moveRight
+			// 
+			this->btn_moveRight->Location = System::Drawing::Point(735, 454);
+			this->btn_moveRight->Name = L"btn_moveRight";
+			this->btn_moveRight->Size = System::Drawing::Size(75, 69);
+			this->btn_moveRight->TabIndex = 13;
+			this->btn_moveRight->Text = L"====>";
+			this->btn_moveRight->UseVisualStyleBackColor = true;
+			// 
+			// btn_scaleOut
+			// 
+			this->btn_scaleOut->Location = System::Drawing::Point(118, 529);
+			this->btn_scaleOut->Name = L"btn_scaleOut";
+			this->btn_scaleOut->Size = System::Drawing::Size(75, 69);
+			this->btn_scaleOut->TabIndex = 14;
+			this->btn_scaleOut->Text = L"<===>";
+			this->btn_scaleOut->UseVisualStyleBackColor = true;
+			// 
+			// btn_scaleIn
+			// 
+			this->btn_scaleIn->Location = System::Drawing::Point(735, 529);
+			this->btn_scaleIn->Name = L"btn_scaleIn";
+			this->btn_scaleIn->Size = System::Drawing::Size(75, 69);
+			this->btn_scaleIn->TabIndex = 15;
+			this->btn_scaleIn->Text = L">===<";
+			this->btn_scaleIn->UseVisualStyleBackColor = true;
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(404, 478);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(145, 20);
+			this->label3->TabIndex = 16;
+			this->label3->Text = L"Перемещать по X";
+			// 
+			// label4
+			// 
+			this->label4->AutoSize = true;
+			this->label4->Location = System::Drawing::Point(389, 553);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(179, 20);
+			this->label4->TabIndex = 17;
+			this->label4->Text = L"Масштабировать по X";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1225, 635);
+			this->Controls->Add(this->label4);
+			this->Controls->Add(this->label3);
+			this->Controls->Add(this->btn_scaleIn);
+			this->Controls->Add(this->btn_scaleOut);
+			this->Controls->Add(this->btn_moveRight);
+			this->Controls->Add(this->btn_moveLeft);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->btn_scaleDown);
+			this->Controls->Add(this->btn_scaleUp);
+			this->Controls->Add(this->btn_moveUp);
+			this->Controls->Add(this->btn_moveDown);
 			this->Controls->Add(this->tbXMin);
 			this->Controls->Add(this->tbYMax);
 			this->Controls->Add(this->tbYMin);
