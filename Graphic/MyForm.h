@@ -1,6 +1,6 @@
 #pragma once
 #include "MyFunctions.h"
-
+#include <cmath>
 namespace Graphic {
 
 	using namespace System;
@@ -132,7 +132,7 @@ namespace Graphic {
 			this->tbYMin->Name = L"tbYMin";
 			this->tbYMin->Size = System::Drawing::Size(100, 26);
 			this->tbYMin->TabIndex = 3;
-			this->tbYMin->Text = L"-10";
+			this->tbYMin->Text = L"-5";
 			// 
 			// tbYMax
 			// 
@@ -140,7 +140,7 @@ namespace Graphic {
 			this->tbYMax->Name = L"tbYMax";
 			this->tbYMax->Size = System::Drawing::Size(100, 26);
 			this->tbYMax->TabIndex = 4;
-			this->tbYMax->Text = L"10";
+			this->tbYMax->Text = L"5";
 			// 
 			// tbXMin
 			// 
@@ -158,6 +158,7 @@ namespace Graphic {
 			this->btn_moveDown->TabIndex = 6;
 			this->btn_moveDown->Text = L"|\r\n|\r\n\\/";
 			this->btn_moveDown->UseVisualStyleBackColor = true;
+			this->btn_moveDown->Click += gcnew System::EventHandler(this, &MyForm::btn_moveDown_Click);
 			// 
 			// btn_moveUp
 			// 
@@ -167,6 +168,7 @@ namespace Graphic {
 			this->btn_moveUp->TabIndex = 7;
 			this->btn_moveUp->Text = L"/\\\r\n|\r\n|";
 			this->btn_moveUp->UseVisualStyleBackColor = true;
+			this->btn_moveUp->Click += gcnew System::EventHandler(this, &MyForm::btn_moveUp_Click);
 			// 
 			// btn_scaleUp
 			// 
@@ -176,6 +178,7 @@ namespace Graphic {
 			this->btn_scaleUp->TabIndex = 8;
 			this->btn_scaleUp->Text = L"/\\\r\n|\r\n\\/";
 			this->btn_scaleUp->UseVisualStyleBackColor = true;
+			this->btn_scaleUp->Click += gcnew System::EventHandler(this, &MyForm::btn_scaleUp_Click);
 			// 
 			// btn_scaleDown
 			// 
@@ -185,6 +188,7 @@ namespace Graphic {
 			this->btn_scaleDown->TabIndex = 9;
 			this->btn_scaleDown->Text = L"\\/\r\n|\r\n/\\";
 			this->btn_scaleDown->UseVisualStyleBackColor = true;
+			this->btn_scaleDown->Click += gcnew System::EventHandler(this, &MyForm::btn_scaleDown_Click);
 			// 
 			// label1
 			// 
@@ -212,6 +216,7 @@ namespace Graphic {
 			this->btn_moveLeft->TabIndex = 12;
 			this->btn_moveLeft->Text = L"<====";
 			this->btn_moveLeft->UseVisualStyleBackColor = true;
+			this->btn_moveLeft->Click += gcnew System::EventHandler(this, &MyForm::btn_moveLeft_Click);
 			// 
 			// btn_moveRight
 			// 
@@ -221,6 +226,7 @@ namespace Graphic {
 			this->btn_moveRight->TabIndex = 13;
 			this->btn_moveRight->Text = L"====>";
 			this->btn_moveRight->UseVisualStyleBackColor = true;
+			this->btn_moveRight->Click += gcnew System::EventHandler(this, &MyForm::btn_moveRight_Click);
 			// 
 			// btn_scaleOut
 			// 
@@ -230,6 +236,7 @@ namespace Graphic {
 			this->btn_scaleOut->TabIndex = 14;
 			this->btn_scaleOut->Text = L"<===>";
 			this->btn_scaleOut->UseVisualStyleBackColor = true;
+			this->btn_scaleOut->Click += gcnew System::EventHandler(this, &MyForm::btn_scaleOut_Click);
 			// 
 			// btn_scaleIn
 			// 
@@ -239,6 +246,7 @@ namespace Graphic {
 			this->btn_scaleIn->TabIndex = 15;
 			this->btn_scaleIn->Text = L">===<";
 			this->btn_scaleIn->UseVisualStyleBackColor = true;
+			this->btn_scaleIn->Click += gcnew System::EventHandler(this, &MyForm::btn_scaleIn_Click);
 			// 
 			// label3
 			// 
@@ -296,23 +304,25 @@ namespace Graphic {
 			Graphics^ gr = Graphics::FromImage(img);
 			gr->FillRectangle(b, 0, 0, img->Width, img->Height);
 		}
-		void plot_grid(Image^ img, Pen^ pn, Point origin, double xs, double ys) {
+		void plot_grid(Image^ img, Pen^ pn, Point origin, 
+			double xs, double ys, double xmin, 
+			double xmax, double ymin, double ymax) {
 			Graphics^ gr = Graphics::FromImage(img);
-			for (int i = 0, j = 0; i < img->Width - 20; i += xs, j++) {
+			for (int i = 0, j = 0; i < (abs(xmin) + abs(xmax)) / (1 / xs); i += xs, j++) {
 				gr->DrawLine(pn, origin.X + i, 0, origin.X + i, img->Height);
 				gr->DrawLine(pn, origin.X - i, 0, origin.X - i, img->Height);
 			}
-			for (int i = 0, j = 0; i < img->Height - 20; i += ys, j++) {
+			for (int i = 0, j = 0; i < (abs(ymin) + abs(ymax)) / (1 / ys); i += ys, j++) {
 				gr->DrawLine(pn, 0, origin.Y + i, img->Width, origin.Y + i);
 				gr->DrawLine(pn, 0, origin.Y - i, img->Width, origin.Y - i);
 			}
 			gr->FillRectangle(br, 0, img->Height - 20, img->Width, 20);
 			gr->FillRectangle(br, 0, 0, 20, img->Height);
-			for (int i = 0, j = 0; i < img->Width - 20; i += xs, j++) {
+			for (int i = 0, j = 0; i < (abs(xmin) + abs(xmax)) / (1 / xs); i += xs, j++) {
 				gr->DrawString(Convert::ToString(j), printFont, br_text, (origin.X + i - 5), img->Height - 20);
 				gr->DrawString(Convert::ToString(-j), printFont, br_text, (origin.X - i - 5), img->Height - 20);
 			}
-			for (int i = 0, j = 0; i < img->Height - 20; i += ys, j++) {
+			for (int i = 0, j = 0; i < (abs(ymin) + abs(ymax)) / (1 / ys); i += ys, j++) {
 				gr->DrawString(Convert::ToString(j), printFont, br_text, 0, origin.Y - i - 5);
 				gr->DrawString(Convert::ToString(-j), printFont, br_text, 0, origin.Y + i - 5);
 			}
@@ -338,7 +348,7 @@ namespace Graphic {
 					ys = (ymax - ymin) / h;
 				Point origin(-xmin / xs, ymax / ys);
 				plot_axes(img, pn_axes, origin);
-				plot_grid(img, pn_grid, origin, 1 / xs, 1 / ys);
+				plot_grid(img, pn_grid, origin, 1 / xs, 1 / ys, xmin, xmax, ymin, ymax);
 				Graphics^ gr = Graphics::FromImage(img);
 				int y_pix = (ymax - f(xmin)) / ys;
 				for (int x_pix1 = 1; x_pix1 < w; x_pix1++) {
@@ -361,6 +371,46 @@ private: System::Void btnPlot_Click(System::Object^ sender, System::EventArgs^ e
 	/*clear(pbPlot->Image, br);
 	plot_axes(pbPlot->Image, pn_axes, Point(100, 100));
 	pbPlot->Refresh();*/
+}
+private: System::Void btn_moveLeft_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) - 1);
+	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) - 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_moveRight_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) + 1);
+	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) + 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_moveUp_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) + 1);
+	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) + 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_moveDown_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) - 1);
+	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) - 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_scaleOut_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) + 1);
+	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) - 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_scaleIn_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) - 1);
+	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) + 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_scaleUp_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) + 1);
+	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) - 1);
+	btnPlot_Click(sender, e);
+}
+private: System::Void btn_scaleDown_Click(System::Object^ sender, System::EventArgs^ e) {
+	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) - 1);
+	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) + 1);
+	btnPlot_Click(sender, e);
 }
 };
 }
