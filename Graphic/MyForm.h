@@ -285,7 +285,7 @@ namespace Graphic {
 			this->btnF1->Name = L"btnF1";
 			this->btnF1->Size = System::Drawing::Size(166, 70);
 			this->btnF1->TabIndex = 18;
-			this->btnF1->Text = L"sin(x*x)*cos(x)";
+			this->btnF1->Text = L"x*abs(-3*x*x+5*x+2)-3";
 			this->btnF1->UseVisualStyleBackColor = true;
 			this->btnF1->Click += gcnew System::EventHandler(this, &MyForm::btnF1_Click);
 			// 
@@ -295,7 +295,7 @@ namespace Graphic {
 			this->btnF2->Name = L"btnF2";
 			this->btnF2->Size = System::Drawing::Size(166, 70);
 			this->btnF2->TabIndex = 19;
-			this->btnF2->Text = L"cos(5*x*x*x+3*x*x+2)";
+			this->btnF2->Text = L"x*cos(abs(x*x-3))";
 			this->btnF2->UseVisualStyleBackColor = true;
 			this->btnF2->Click += gcnew System::EventHandler(this, &MyForm::btnF2_Click);
 			// 
@@ -305,7 +305,7 @@ namespace Graphic {
 			this->btnF3->Name = L"btnF3";
 			this->btnF3->Size = System::Drawing::Size(166, 70);
 			this->btnF3->TabIndex = 20;
-			this->btnF3->Text = L"abs(sin(x)*x)";
+			this->btnF3->Text = L"abs(sin(x)*x)-5";
 			this->btnF3->UseVisualStyleBackColor = true;
 			this->btnF3->Click += gcnew System::EventHandler(this, &MyForm::btnF3_Click);
 			// 
@@ -325,7 +325,7 @@ namespace Graphic {
 			this->btnF5->Name = L"btnF5";
 			this->btnF5->Size = System::Drawing::Size(166, 70);
 			this->btnF5->TabIndex = 22;
-			this->btnF5->Text = L"sin(x)*abs(x*x+5*x+1)";
+			this->btnF5->Text = L"sqrt(x*x*abs(sin(x))) - 5";
 			this->btnF5->UseVisualStyleBackColor = true;
 			this->btnF5->Click += gcnew System::EventHandler(this, &MyForm::btnF5_Click);
 			// 
@@ -379,7 +379,7 @@ namespace Graphic {
 		Brush^ br, ^ br_text;
 		Pen^ pn_axes, ^ pn_line, ^ pn_grid;
 		System::Drawing::Font^ printFont;
-		double (*func)(double);
+		double (*func)(double), finalRoot;
 
 		void clear(Image^ img, Brush^ b) {
 			Graphics^ gr = Graphics::FromImage(img);
@@ -417,16 +417,25 @@ namespace Graphic {
 			gr->DrawString("Y", printFont, br_text, origin.X - 20, 0);
 		}
 
-		double rootFind(double lBorder, double rBorder, double (*f)(double)) {
+		void rootFind(double lBorder, double rBorder, double (*f)(double), double yLast, double y) {
 			double eps = 0.001;
 			double root = (lBorder + rBorder) / 2;
 			if (abs(f(root)) < eps) {
-				return root;
+				finalRoot = root;
+				return;
 			}
-			if (f(root) < 0)
-				rootFind(lBorder, root, *f);
-			if (f(root) > 0)
-				rootFind(root, rBorder, *f);
+			if (yLast > y) {
+				if (f(root) < 0)
+					rootFind(lBorder, root, *f, yLast, y);
+				if (f(root) > 0)
+					rootFind(root, rBorder, *f, yLast, y);
+			}
+			if (yLast < y) {
+				if (f(root) > 0)
+					rootFind(lBorder, root, *f, yLast, y);
+				if (f(root) < 0)
+					rootFind(root, rBorder, *f, yLast, y);
+			}
 		}
 
 		void plot(double (*f)(double), 
@@ -450,57 +459,69 @@ namespace Graphic {
 					double x = xmin + x_pix1 * xs,
 						y = f(x);
 					int y_pix1 = (ymax - y) / ys;
+					gr->DrawLine(pn_line, x_pix1 - 1, y_pix, x_pix1, y_pix1);
+					y_pix = y_pix1;
 
 					///////////////////////////////
-					
+
 					if (x_pix1 != 1) {
-						if (yLast * y <= 0) {
-
-							double root;
-							if (yLast == 0)
-								root = xLast;
-							else 
-								if (y == 0)
-									root = x;
-								else 
-									root = rootFind(xLast, x, (*f));
-							String^ s = "( " + Convert::ToString(root)[0] +
-								/*Convert::ToString(root)[0] +
-								Convert::ToString(root)[1] +
-								Convert::ToString(root)[2] +
-								Convert::ToString(root)[3] + */
-								" ; " + "0 )";
-							gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
-
+						if (yLast * y <= 0 && xLast * x <= 0) {
+							gr->DrawString("( 0 ; 0 )", printFont, br_text, x_pix1, y_pix1);
 						}
-						if (xLast * x <= 0) {
+						else {
+						
+							if (yLast * y <= 0) {
 
-							double root;
-							if (xLast == 0)
-								root = yLast;
-							else
-								if (x == 0)
-									root = y;
+								double root;
+								if (yLast == 0)
+									finalRoot = xLast;
 								else
-									root = f(0);
-							String^ s = "( 0" + " ; " + Convert::ToString(root) +
-								/*Convert::ToString(root)[0] +
-								Convert::ToString(root)[1] +
-								Convert::ToString(root)[2] +
-								Convert::ToString(root)[3] + */
-								" )";
-							gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+									if (y == 0)
+										finalRoot = x;
+									else
+										rootFind(xLast, x, (*f), yLast, y);
+								String^ s = "( ";
+								if (Convert::ToString(finalRoot)->Length > 5) {
+									String^ num = Convert::ToString(finalRoot);
+									for (int i = 0; i < 5; i++)
+										s += num[i];
+								}
+								else
+									s += Convert::ToString(finalRoot);
+								s += " ; " + "0 )";
+								gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
 
+							}
+							if (xLast * x <= 0) {
+
+								double root;
+								if (xLast == 0)
+									root = yLast;
+								else
+									if (x == 0)
+										root = y;
+									else
+										root = f(0);
+								String^ s = "( 0" + " ; ";
+								if (Convert::ToString(root)->Length > 5) {
+									String^ num = Convert::ToString(root);
+									for (int i = 0; i < 5; i++)
+										s += num[i];
+								}
+								else
+									s += Convert::ToString(root);
+								s += " )";
+								gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+
+							}
 						}
 					}
 
 					yLast = y;
 					xLast = x;
-					
+
 					//////////////////////////////////////////////
 
-					gr->DrawLine(pn_line, x_pix1 - 1, y_pix, x_pix1, y_pix1);
-					y_pix = y_pix1;
 				}
 				plot_grid(img, pn_grid, origin, 1 / xs, 1 / ys, xmin, xmax, ymin, ymax);
 		}
