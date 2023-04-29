@@ -416,6 +416,19 @@ namespace Graphic {
 			gr->DrawLine(pn, origin.X, 0, origin.X, img->Height);
 			gr->DrawString("Y", printFont, br_text, origin.X - 20, 0);
 		}
+
+		double rootFind(double lBorder, double rBorder, double (*f)(double)) {
+			double eps = 0.001;
+			double root = (lBorder + rBorder) / 2;
+			if (abs(f(root)) < eps) {
+				return root;
+			}
+			if (f(root) < 0)
+				rootFind(lBorder, root, *f);
+			if (f(root) > 0)
+				rootFind(root, rBorder, *f);
+		}
+
 		void plot(double (*f)(double), 
 			double xmin, 
 			double xmax,
@@ -430,22 +443,61 @@ namespace Graphic {
 				plot_axes(img, pn_axes, origin);
 				Graphics^ gr = Graphics::FromImage(img);
 				int y_pix = (ymax - f(xmin)) / ys;
+
+				double yLast, xLast;
+
 				for (int x_pix1 = 1; x_pix1 < w; x_pix1++) {
 					double x = xmin + x_pix1 * xs,
 						y = f(x);
 					int y_pix1 = (ymax - y) / ys;
 
-					/*if (x_pix1 == origin.X || y_pix1 == origin.Y) {
-						String^ s = "( " + Convert::ToString(x)[0] +
-							Convert::ToString(x)[1] + 
-							Convert::ToString(x)[2] + 
-							Convert::ToString(x)[3] + " ; " +
-							Convert::ToString(y)[0] + 
-							Convert::ToString(y)[1] +
-							Convert::ToString(y)[2] + 
-							Convert::ToString(y)[3] + " )";
-						gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
-					}*/
+					///////////////////////////////
+					
+					if (x_pix1 != 1) {
+						if (yLast * y <= 0) {
+
+							double root;
+							if (yLast == 0)
+								root = xLast;
+							else 
+								if (y == 0)
+									root = x;
+								else 
+									root = rootFind(xLast, x, (*f));
+							String^ s = "( " + Convert::ToString(root)[0] +
+								/*Convert::ToString(root)[0] +
+								Convert::ToString(root)[1] +
+								Convert::ToString(root)[2] +
+								Convert::ToString(root)[3] + */
+								" ; " + "0 )";
+							gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+
+						}
+						if (xLast * x <= 0) {
+
+							double root;
+							if (xLast == 0)
+								root = yLast;
+							else
+								if (x == 0)
+									root = y;
+								else
+									root = f(0);
+							String^ s = "( 0" + " ; " + Convert::ToString(root) +
+								/*Convert::ToString(root)[0] +
+								Convert::ToString(root)[1] +
+								Convert::ToString(root)[2] +
+								Convert::ToString(root)[3] + */
+								" )";
+							gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+
+						}
+					}
+
+					yLast = y;
+					xLast = x;
+					
+					//////////////////////////////////////////////
 
 					gr->DrawLine(pn_line, x_pix1 - 1, y_pix, x_pix1, y_pix1);
 					y_pix = y_pix1;
