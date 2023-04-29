@@ -428,7 +428,6 @@ namespace Graphic {
 					ys = (ymax - ymin) / h;
 				Point origin(-xmin / xs, ymax / ys);
 				plot_axes(img, pn_axes, origin);
-				plot_grid(img, pn_grid, origin, 1 / xs, 1 / ys, xmin, xmax, ymin, ymax);
 				Graphics^ gr = Graphics::FromImage(img);
 				int y_pix = (ymax - f(xmin)) / ys;
 				for (int x_pix1 = 1; x_pix1 < w; x_pix1++) {
@@ -436,9 +435,22 @@ namespace Graphic {
 						y = f(x);
 					int y_pix1 = (ymax - y) / ys;
 
+					/*if (x_pix1 == origin.X || y_pix1 == origin.Y) {
+						String^ s = "( " + Convert::ToString(x)[0] +
+							Convert::ToString(x)[1] + 
+							Convert::ToString(x)[2] + 
+							Convert::ToString(x)[3] + " ; " +
+							Convert::ToString(y)[0] + 
+							Convert::ToString(y)[1] +
+							Convert::ToString(y)[2] + 
+							Convert::ToString(y)[3] + " )";
+						gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+					}*/
+
 					gr->DrawLine(pn_line, x_pix1 - 1, y_pix, x_pix1, y_pix1);
 					y_pix = y_pix1;
 				}
+				plot_grid(img, pn_grid, origin, 1 / xs, 1 / ys, xmin, xmax, ymin, ymax);
 		}
 private: System::Void btnPlot_Click(System::Object^ sender, System::EventArgs^ e) {
 	double xmin = Convert::ToDouble(tbXMin->Text),
@@ -453,23 +465,27 @@ private: System::Void btnPlot_Click(System::Object^ sender, System::EventArgs^ e
 	pbPlot->Refresh();*/
 }
 private: System::Void btn_moveLeft_Click(System::Object^ sender, System::EventArgs^ e) {
-	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) - 1);
-	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) - 1);
+	double len = abs(Convert::ToDouble(tbXMin->Text) - Convert::ToDouble(tbXMax->Text)) * 0.1;
+	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) - len);
+	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) - len);
 	btnPlot_Click(sender, e);
 }
 private: System::Void btn_moveRight_Click(System::Object^ sender, System::EventArgs^ e) {
-	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) + 1);
-	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) + 1);
+	double len = abs(Convert::ToDouble(tbXMin->Text) - Convert::ToDouble(tbXMax->Text)) * 0.1;
+	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) + len);
+	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) + len);
 	btnPlot_Click(sender, e);
 }
 private: System::Void btn_moveUp_Click(System::Object^ sender, System::EventArgs^ e) {
-	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) + 1);
-	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) + 1);
+	double len = abs(Convert::ToDouble(tbYMin->Text) - Convert::ToDouble(tbYMax->Text)) * 0.1;
+	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) + len);
+	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) + len);
 	btnPlot_Click(sender, e);
 }
 private: System::Void btn_moveDown_Click(System::Object^ sender, System::EventArgs^ e) {
-	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) - 1);
-	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) - 1);
+	double len = abs(Convert::ToDouble(tbYMin->Text) - Convert::ToDouble(tbYMax->Text)) * 0.1;
+	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) - len);
+	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) - len);
 	btnPlot_Click(sender, e);
 }
 private: System::Void btn_scaleOut_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -482,6 +498,8 @@ private: System::Void btn_scaleOut_Click(System::Object^ sender, System::EventAr
 }
 private: System::Void btn_scaleIn_Click(System::Object^ sender, System::EventArgs^ e) {
 	double len = abs(Convert::ToDouble(tbXMin->Text) - Convert::ToDouble(tbXMax->Text)) * 0.1;
+	if (len * 10 > 246)
+		return;
 	tbXMin->Text = Convert::ToString(Convert::ToDouble(tbXMin->Text) - len);
 	tbXMax->Text = Convert::ToString(Convert::ToDouble(tbXMax->Text) + len);
 	btnPlot_Click(sender, e);
@@ -496,6 +514,8 @@ private: System::Void btn_scaleUp_Click(System::Object^ sender, System::EventArg
 }
 private: System::Void btn_scaleDown_Click(System::Object^ sender, System::EventArgs^ e) {
 	double len = abs(Convert::ToDouble(tbYMin->Text) - Convert::ToDouble(tbYMax->Text)) * 0.1;
+	if (len * 10 > 120)
+		return;
 	tbYMin->Text = Convert::ToString(Convert::ToDouble(tbYMin->Text) - len);
 	tbYMax->Text = Convert::ToString(Convert::ToDouble(tbYMax->Text) + len);
 	btnPlot_Click(sender, e);
