@@ -480,7 +480,7 @@ namespace Graphic {
 										finalRoot = x;
 									else
 										rootFind(xLast, x, (*f), yLast, y);
-								String^ s = "( ";
+								String^ s = "";
 								if (Convert::ToString(finalRoot)->Length > 5) {
 									String^ num = Convert::ToString(finalRoot);
 									for (int i = 0; i < 5; i++)
@@ -488,8 +488,7 @@ namespace Graphic {
 								}
 								else
 									s += Convert::ToString(finalRoot);
-								s += " ; " + "0 )";
-								gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+								gr->DrawString(s, printFont, br_text, x_pix1, origin.Y + 5);
 
 							}
 							if (xLast * x <= 0) {
@@ -502,7 +501,7 @@ namespace Graphic {
 										root = y;
 									else
 										root = f(0);
-								String^ s = "( 0" + " ; ";
+								String^ s = "";
 								if (Convert::ToString(root)->Length > 5) {
 									String^ num = Convert::ToString(root);
 									for (int i = 0; i < 5; i++)
@@ -510,8 +509,7 @@ namespace Graphic {
 								}
 								else
 									s += Convert::ToString(root);
-								s += " )";
-								gr->DrawString(s, printFont, br_text, x_pix1, y_pix1);
+								gr->DrawString(s, printFont, br_text, origin.X, y_pix1);
 
 							}
 						}
@@ -618,6 +616,7 @@ private: System::Void btn_Res_Click(System::Object^ sender, System::EventArgs^ e
 	tbXMin->Text = "-10";
 	tbYMax->Text = "5";
 	tbYMin->Text = "-5";
+	btnPlot_Click(sender, e);
 }
 };
 }
